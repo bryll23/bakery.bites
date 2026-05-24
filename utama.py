@@ -183,7 +183,7 @@ Kota Bakery, Indonesia 🇮🇩
 """)
 
 with col2:
-    no_hp = "62895400551222"
+    no_hp = "6285869485201"
     pesan = "Halo bakery.bites! Saya mau pesan menu strawberry-nya dong 🍓"
     link = f"https://wa.me/{no_hp}?text={pesan.replace(' ','%20')}"
 
