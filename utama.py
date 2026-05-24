@@ -168,4 +168,4 @@ with col2:
 
     st.link_button("📱 Pesan WhatsApp", link)
 
-st.caption("© 2026 bakery.bites — Freshly Baked with Love 🍓✨")vv
+st.caption("© 2026 bakery.bites — Freshly Baked with Love 🍓✨")
