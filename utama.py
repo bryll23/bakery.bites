@@ -66,19 +66,34 @@ st.divider()
 file_data = "data_bakery.bites.csv"
 
 if not os.path.exists(file_data):
-    st.error(f"❌ File '{file_data}' tidak ditemukan!")
+    st.error(f"❌ File '{file_data}' tidak ditemukan di server!")
     st.stop()
 
-df = pd.read_csv(file_data)
+# Membaca CSV dengan deteksi otomatis jika pemisahnya koma (,) atau titik koma (;)
+try:
+    df = pd.read_csv(file_data, sep=None, engine='python')
+except Exception as e:
+    st.error(f"❌ Gagal membaca file CSV. Error: {e}")
+    st.stop()
 
-kategori_list = df["kategori"].unique()
+# Membersihkan spasi di awal/akhir nama kolom (misal: "kategori " menjadi "kategori")
+df.columns = df.columns.str.strip().str.lower()
+
+# Cek apakah kolom 'kategori' benar-benar ada setelah dibersihkan
+if "kategori" not in df.columns:
+    st.error(f"❌ Kolom 'kategori' tidak ditemukan di file CSV kamu!")
+    st.warning(f"Kolom yang terdeteksi di CSV kamu saat ini adalah: `{list(df.columns)}`")
+    st.info("💡 Solusi: Pastikan baris pertama di file `data_bakery.bites.csv` kamu bertuliskan: `kategori,nama,harga,status,foto`")
+    st.stop()
+
+kategori_list = df["kategori"].dropna().unique()
 
 # ==========================
 # PRODUK
 # ==========================
 for kat in kategori_list:
 
-    st.header(f"🍓 Menu Kategori: {kat.title()}")
+    st.header(f"🍓 Menu Kategori: {str(kat).title()}")
 
     data_kat = df[df["kategori"] == kat]
     cols = st.columns(3)
@@ -108,7 +123,12 @@ for kat in kategori_list:
             # ==========================
             # HARGA
             # ==========================
-            st.markdown(f"### 💸 Rp {row['harga']:,}")
+            try:
+                harga_formatted = f"{int(row['harga']):,}"
+            except:
+                harga_formatted = str(row['harga'])
+                
+            st.markdown(f"### 💸 Rp {harga_formatted}")
 
             # ==========================
             # STATUS
@@ -148,4 +168,4 @@ with col2:
 
     st.link_button("📱 Pesan WhatsApp", link)
 
-st.caption("© 2026 bakery.bites — Freshly Baked with Love 🍓✨")
+st.caption("© 2026 bakery.bites — Freshly Baked with Love 🍓✨")vv
